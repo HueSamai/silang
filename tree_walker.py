@@ -140,7 +140,8 @@ class TreeWalker:
                 pass
             except Stop:
                 break
-            self.interpret(cast(stmt.final_stmt))
+            if stmt.final_stmt is not None:
+                self.interpret(stmt.final_stmt)
 
     def interpret_function(self, stmt: Function):
         try:
@@ -258,7 +259,7 @@ class TreeWalker:
                 Error.report_packet(f"Tried to use a non-string value '{self.type_to_str(type(value))}' with 'input' expression", expr.lvalue) 
                 exit(1)
 
-            return SILString(input(value.get_string()))
+            return SILString(input(value.get_string().encode('ascii', errors='replace').decode('ascii')))
         
         if expr.type == Expression.VARIABLE:
             try:

@@ -1,0 +1,4 @@
+// This is a comment!
+// Saying hello to the world is as easy as this!
+// SIL has a print statement. It is not included in the standard library
+print "Hello, World!";

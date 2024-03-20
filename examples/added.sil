@@ -1,0 +1,13 @@
+// simple adder app
+
+var acc = 0;
+while true
+{
+    var inp = num(input "Enter a number: "); // we convert the string to a number
+    // if num fails it will return 'novalue'
+    // the '!' checks if the input is 'novalue'.
+    stop !inp;
+    acc += inp;
+}
+
+print "Total sum is: "; print acc;

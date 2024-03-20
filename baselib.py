@@ -141,7 +141,7 @@ class Round(Callable):
         try:
             return float(round(args[0]))
         except TypeError:
-            return novalue
+            return None
 
 class Base:
     funs = {
