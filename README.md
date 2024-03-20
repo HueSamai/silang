@@ -3,7 +3,10 @@
 silang (slow interpreted language) is an interpreted, proecural-orientated language, similar to javascript. The interpreter is hand-written in python. I made this while reading the Crafting Intrpreters book.
 
 # Run silang code
-The file extension for silang is '.sil', and you can run silang code by cloning this repo, and using: python main.py <file.sil>
+The file extension for silang is '.sil', and you can run silang code by cloning this repo, and using: 
+```
+> python main.py <file.sil>
+```
 
 # Syntax highlighting
 I made a syntax highlighter using tree-sitter which you can find (here)[https://github.com/HueSamai/tree-sitter-sil].
