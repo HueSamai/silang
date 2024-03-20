@@ -114,7 +114,7 @@ else
 ```
 
 silang has the usual boolean expressions.
-```py
+```js
 
 // this is confusing lol
 print 8 == 10 or 7 > 3 and 5 <= 9 or 6 != -2 and !false or !true;
@@ -168,7 +168,7 @@ while true
   stop; // stops the loop
 
 while true
-  stop input "Enter something: " == ""; // this will stop the loop if we entered nothing.
+  stop (input "Enter something: ") == ""; // this will stop the loop if we entered nothing.
 
 var a = 0;
 while a < 10
