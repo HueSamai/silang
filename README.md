@@ -207,6 +207,13 @@ myList[3] = ["even lists", "themselves!"];
 print myList[10]; // error: index outside the bounds of list
 ```
 
+> Note: Since there are no integers in silang, we can index lists using floating values without any errors. silang will just round the floating point value down to the nearest whole number.
+
+```javascript
+var list = [10, 9, 8];
+print list[0.5]; // 10
+```
+
 Strings are also internally lists. So we can do most of the same stuff.
 ```javascript
 var myString = "Hello, World!";
@@ -253,6 +260,39 @@ list.push(3);
 // this works for all functions. so we can do it for the previous call of 'num'
 
 print "100".num() + 1; // this is internally the exact same as the previous print statement
+```
+
+> Note: strings and lists are passed as references to functions, whereas clones are passed for all other values
+
+```javascript
+fun modifyString(string) string[0] = "H";
+
+var myString = "Yello, World!";
+myString.modifyString(); // using dot notation
+print myString; // Hello, World!
+
+// to get around this we can do something like this
+myString = "Yello, World!";
+modifyString(myString + ""); // adding an empty string means a separate string is created, so a copy of the string is passed to modifyString
+print myString; // Yello, World!
+
+// to do the same thing for a list, you can check the 'listops.sil' file under base. there is a 'copy' function
+var myList = [1, 2, 3];
+modifyString(myList); // we can pass a list to this function and the function will still work
+print myList; // [H, 2, 3]
+
+// using the copy function
+myList = [1, 2, 3];
+modifyString(myList.copy());
+print myList; // [1, 2, 3]
+
+// we can also code our own copy function
+fun copy(list)
+{
+  var clone = [];
+  for var i = 0; i < list.length(); i += 1; clone.push(list[i]);
+  return clone;
+}
 ```
 
 Functions are first class objects, so we can do stuff like this.
@@ -333,6 +373,19 @@ print num("100.01") + 10;
 
 // round: round a number to the nearest whole number
 print round(10.5); // will print 11
+```
+
+LASTLY, includes!
+
+We can include another silang file using `#` at the start of a line, followed by the path to the file
+```javascript
+// relative paths work
+#file.sil
+
+// none relative paths should also work
+#C:\base.sil
+
+functionDefinedInBaseSil() // we can now call functions from a separate file!
 ```
 
 Now you are an expert in silang! There is still some quirky behaviour in silang, but you will figure those things out while programming. If you are wondering about something, just check the source code.
