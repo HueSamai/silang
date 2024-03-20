@@ -1,0 +1,35 @@
+program     -> statement*
+
+statement   -> block | ifStmt | printStmt | varDecl | exprStmt | call | funcDecl | return | listSet | stop | skip | while | for | varSet
+
+return      -> "return" expression? ";"
+stop        -> "stop" expression? ";"
+skip        -> "skip" expression? ";"
+exprStmt    -> expression? ";"
+ifStmt      -> "if" expression statement ("else" statement)?
+block       -> "{" statement* "}"
+printStmt   -> "print " expression ";" 
+varDecl     -> "var " IDENTIFIER ("=" expression)? ";"
+varSet      -> IDENTIFIER ASSIGNMENT_OP expression ";"
+listSet     -> IDENTIFIER ("[" expression "]")* ASSIGNMENT_OP expression ";"
+while       -> "while " expression statement
+for         -> "for " (varDecl | varSet | ";" ) expression? ";" exprStmt statement
+
+
+exprList    -> expression ("," expression)*
+
+params      -> IDENTIFIER ("," IDENTIFIER)*
+funcDecl    -> "fun " IDENTIFIER "(" params? ")" statement
+
+inputExpr   -> "input" expression
+
+expression  -> logic
+
+logic       -> conditional (("and" | "or") conditional)*
+conditional -> term (("==" | ">=" | "<=" | "!=" | "<" | ">") term)*
+term        -> factor (("+" | "-") factor)*
+factor      -> unary (("*" | "/") unary)*
+unary       -> (("!" | "-") listAccess) | listAccess
+listAccess  -> call ("[" expression "]")*
+call        -> primary ("." IDENTIFIER)? ( "(" exprList? ")" )*
+primary     -> "(" expression ")" | IDENTIFIER | STRING | NUMBER | "true" | "false" | "novalue" | inputExpr | "[" exprList? "]"

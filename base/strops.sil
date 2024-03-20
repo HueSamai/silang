@@ -1,0 +1,18 @@
+fun split(string, separator)
+{
+    var list = [];
+    
+    var current_item = "";
+    for var i = 0; i < length(string); i += 1;
+        if string[i] == separator
+        {
+            list.push(current_item);
+            current_item = "";
+        }
+        else
+            current_item += string[i];
+    
+    
+    list.push(current_item);
+    return list;
+}

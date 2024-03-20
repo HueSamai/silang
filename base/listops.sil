@@ -1,0 +1,21 @@
+fun copy(list)
+{
+    var new = [];
+    for var i = 0; i < length(list); i += 1; new.push(list[i]);
+    return new;
+}
+
+
+fun contains(list, item)
+{
+    for var i = 0; i < length(list); i += 1;
+        if item == list[i] return true;
+    return false;
+}
+
+fun indexof(list, item)
+    for var i = 0; i < length(list); i += 1;
+        if item == list[i] return i;
+
+
+fun choice(list) return list[rng() * length(list)];

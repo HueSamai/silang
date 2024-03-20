@@ -1,0 +1,27 @@
+fun floor(n) round(n - 0.5);
+fun ceil(n) round(n + 0.5);
+fun mod(a, b) a - floor(a / b) * b;
+
+fun chr(n)
+    if n == 0 return "0"; else
+    if n == 1 return "1"; else
+    if n == 2 return "2"; else
+    if n == 3 return "3"; else
+    if n == 4 return "4"; else
+    if n == 5 return "5"; else
+    if n == 6 return "6"; else
+    if n == 7 return "7"; else
+    if n == 8 return "8"; else
+    if n == 9 return "9";
+
+fun tostr(n)
+{
+    var str = "";
+    var t = n;
+    while t > 0
+    {
+        str = chr(mod(t, 10)) + str;
+        t = floor(t / 10);
+    }
+    return str;
+}
