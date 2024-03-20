@@ -378,7 +378,7 @@ print round(10.5); // will print 11
 LASTLY, includes!
 
 We can include another silang file using `#` at the start of a line, followed by the path to the file
-```javascript
+```c
 // relative paths work
 #file.sil
 
