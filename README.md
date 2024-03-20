@@ -9,7 +9,7 @@ The file extension for silang is '.sil', and you can run silang code by cloning 
 ```
 
 # Syntax highlighting
-I made a syntax highlighter using tree-sitter which you can find (here)[https://github.com/HueSamai/tree-sitter-sil].
+I made a syntax highlighter using tree-sitter which you can find [here](https://github.com/HueSamai/tree-sitter-sil).
 
 # Syntax
 If you want to understand the syntax completely, check the "grammar.txt" file and the source code. The examples will also be helpful. 
