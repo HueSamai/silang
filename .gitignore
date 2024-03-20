@@ -1,3 +1,4 @@
 ignore
 out.txt
 _.swp
+__pycache__
