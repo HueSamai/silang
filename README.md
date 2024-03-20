@@ -252,7 +252,7 @@ print num("100") + 1;
 var list = [1, 2];
 push(list, 3); // list = [1, 2, 3];
 
-// silang can give you an object orientated feel by calling functions with dot representation
+// silang can give you an object orientated feel by calling functions with dot notation
 // the above function call, can be also written in silang's dot notation like so
 list.push(3);
 
@@ -329,7 +329,7 @@ print mult(9.6, -3);
 print div(10, 2); // will print 'novalue'
 ```
 
-Okay let's go over all the built-in functions now.
+Let's go over all the built-in functions now. (there aren't very many)
 ```javascript
 var list = [1, 2, 3];
 
@@ -382,7 +382,7 @@ We can include another silang file using `#` at the start of a line, followed by
 // relative paths work
 #file.sil
 
-// none relative paths should also work
+// absolute paths should also work
 #C:\base.sil
 
 functionDefinedInBaseSil() // we can now call functions from a separate file!
