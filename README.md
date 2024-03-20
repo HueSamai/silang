@@ -20,7 +20,7 @@ Okay let's do the basics.
 ```
 
 We can use the print statement to print something to the standard output. Semi-colons come at the end of a statement, except for if it is a block statement. 
-```py
+```javascript
 print "Hello, World!\n"; // note: as you can see, the print statement doesn't print a newline automatically at the end for us.
 print 2 + 8 * 7 / (9 - 2); // follows bidmas
 ```
