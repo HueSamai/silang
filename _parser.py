@@ -2,10 +2,15 @@ from tokens import *
 from error import *
 from tree_components import *
 
+def cast(x) -> Any:
+    # used for the type checker
+    return x
+
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
         self.i = 0
+        self.in_block = False
 
     def parse(self):
         Error.stage = "Parsing"
@@ -121,7 +126,12 @@ class Parser:
             return self.parse_print()
         
         if self.match(Token.KEYWORD, "fun"):
-            return self.parse_function()
+            func = self.parse_function()
+            if self.in_block:
+                self.report_error("Cannot declare function inside of another function.", func)
+                return None
+            else:
+                return func
         
         if self.match(Token.KEYWORD, "return"):
             return self.parse_return()
@@ -177,7 +187,7 @@ class Parser:
             self.advance()
             elseStmt = self.parse_statement()
 
-        return self.set_error_fields(If(expr, stmt, elseStmt), current)
+        return self.set_error_fields(If(expr, stmt, cast(elseStmt)), current)
 
     def parse_print(self):
         current = self.current()
@@ -209,7 +219,7 @@ class Parser:
 
         thingy = self.set_error_fields(Stop(), current)
         if expr is not None:
-            thingy = self.set_error_fields(If(expr, thingy, None), current)
+            thingy = self.set_error_fields(If(expr, thingy, cast(None)), current)
         return thingy
     
     def parse_skip(self):
@@ -223,7 +233,7 @@ class Parser:
 
         thingy = self.set_error_fields(Skip(), current)
         if expr is not None:
-            thingy = self.set_error_fields(If(expr, thingy, None), current)
+            thingy = self.set_error_fields(If(expr, thingy, cast(None)), current)
         return thingy
 
     def parse_while(self):
@@ -316,12 +326,18 @@ class Parser:
         current = self.current()
 
         self.advance() # skip over curly bracket
+        
+        was_in_block = self.in_block
+        self.in_block = True
 
         stmts = []
         while not self.is_end() and self.current().type != Token.CLOSED_CURLY:
             stmts.append(self.parse_statement())
 
         self.consume(Token.CLOSED_CURLY)
+        
+        if not was_in_block:
+            self.in_block = False
 
         return self.set_error_fields(Block(stmts), current)
 
@@ -484,13 +500,11 @@ class Parser:
 
         call = self.set_error_fields(self.parse_primary(), current)
         
-        is_weird = False
-        id = None
+        # we check if dot_func is None to see if it is a dot notation function
+        dot_func = None
         if self.match(Token.POINT):
             self.advance()
-            id = self.current().lexeme
-            self.consume(Token.IDENTIFIER)
-            is_weird = True
+            dot_func = self.parse_primary()
         
         saw_paren = False
         while self.match(Token.OPEN_PAREN):
@@ -498,13 +512,17 @@ class Parser:
             self.advance()
             arguments = self.parse_expr_list()
             self.consume(Token.CLOSED_PAREN)
-            if is_weird:
-                is_weird = False
+            if dot_func is not None:
                 arguments.insert(0, call)
-                call = Variable(id)
+                call = self.set_error_fields(dot_func, self.current())
+                dot_func = None
             call = self.set_error_fields(Call(call, arguments), current)
-            
-        if is_weird and not saw_paren:
+
+            if self.match(Token.POINT):
+                self.advance()
+                dot_func = self.parse_primary()
+         
+        if dot_func is not None and not saw_paren:
             self.report_error("Weird function call requires parenthesis", call)
 
         return call

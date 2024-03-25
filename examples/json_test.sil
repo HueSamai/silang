@@ -2,7 +2,7 @@
 
 var employees = (("examples/employees.json".read()).json()).mget("employees");
 
-print "Done parsing json\n";
+print ismap(employees); print "\n"; print employees; print "\n";
 printHash(employees, 3, 0);
 
 print "\n";

@@ -200,6 +200,9 @@ class Type(Callable):
 
         if type(args[0]) == bool:
             return SILString("bool")
+        
+        if issubclass(type(args[0]), Callable):
+            return SILString("function")
 
         if args[0] == None:
             return None
