@@ -9,7 +9,7 @@ The file extension for silang is '.sil', and you can run silang code by cloning 
 ```
 
 # Syntax highlighting
-I made a syntax highlighter using tree-sitter which you can find (here)[https://github.com/HueSamai/tree-sitter-sil].
+I made a syntax highlighter using tree-sitter which you can find [here](https://github.com/HueSamai/tree-sitter-sil).
 
 # Syntax
 If you want to understand the syntax completely, check the "grammar.txt" file and the source code. The examples will also be helpful. 
@@ -114,7 +114,7 @@ else
 ```
 
 silang has the usual boolean expressions.
-```py
+```js
 
 // this is confusing lol
 print 8 == 10 or 7 > 3 and 5 <= 9 or 6 != -2 and !false or !true;
@@ -168,7 +168,7 @@ while true
   stop; // stops the loop
 
 while true
-  stop input "Enter something: " == ""; // this will stop the loop if we entered nothing.
+  stop (input "Enter something: ") == ""; // this will stop the loop if we entered nothing.
 
 var a = 0;
 while a < 10
@@ -205,6 +205,13 @@ myList[0] = "lists can store multiple different types!";
 myList[3] = ["even lists", "themselves!"];
 
 print myList[10]; // error: index outside the bounds of list
+```
+
+> Note: Since there are no integers in silang, we can index lists using floating values without any errors. silang will just round the floating point value down to the nearest whole number.
+
+```javascript
+var list = [10, 9, 8];
+print list[0.5]; // 10
 ```
 
 Strings are also internally lists. So we can do most of the same stuff.
@@ -245,7 +252,7 @@ print num("100") + 1;
 var list = [1, 2];
 push(list, 3); // list = [1, 2, 3];
 
-// silang can give you an object orientated feel by calling functions with dot representation
+// silang can give you an object orientated feel by calling functions with dot notation
 // the above function call, can be also written in silang's dot notation like so
 list.push(3);
 
@@ -253,6 +260,39 @@ list.push(3);
 // this works for all functions. so we can do it for the previous call of 'num'
 
 print "100".num() + 1; // this is internally the exact same as the previous print statement
+```
+
+> Note: strings and lists are passed as references to functions, whereas clones are passed for all other values
+
+```javascript
+fun modifyString(string) string[0] = "H";
+
+var myString = "Yello, World!";
+myString.modifyString(); // using dot notation
+print myString; // Hello, World!
+
+// to get around this we can do something like this
+myString = "Yello, World!";
+modifyString(myString + ""); // adding an empty string means a separate string is created, so a copy of the string is passed to modifyString
+print myString; // Yello, World!
+
+// to do the same thing for a list, you can check the 'listops.sil' file under base. there is a 'copy' function
+var myList = [1, 2, 3];
+modifyString(myList); // we can pass a list to this function and the function will still work
+print myList; // [H, 2, 3]
+
+// using the copy function
+myList = [1, 2, 3];
+modifyString(myList.copy());
+print myList; // [1, 2, 3]
+
+// we can also code our own copy function
+fun copy(list)
+{
+  var clone = [];
+  for var i = 0; i < list.length(); i += 1; clone.push(list[i]);
+  return clone;
+}
 ```
 
 Functions are first class objects, so we can do stuff like this.
@@ -289,7 +329,7 @@ print mult(9.6, -3);
 print div(10, 2); // will print 'novalue'
 ```
 
-Okay let's go over all the built-in functions now.
+Let's go over all the built-in functions now. (there aren't very many)
 ```javascript
 var list = [1, 2, 3];
 
@@ -333,6 +373,19 @@ print num("100.01") + 10;
 
 // round: round a number to the nearest whole number
 print round(10.5); // will print 11
+```
+
+LASTLY, includes!
+
+We can include another silang file using `#` at the start of a line, followed by the path to the file
+```javascript
+// relative paths work
+#file.sil
+
+// absolute paths should also work
+#C:\base.sil
+
+functionDefinedInBaseSil() // we can now call functions from a separate file!
 ```
 
 Now you are an expert in silang! There is still some quirky behaviour in silang, but you will figure those things out while programming. If you are wondering about something, just check the source code.
