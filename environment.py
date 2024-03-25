@@ -1,5 +1,6 @@
 from error import *
 
+
 class Environment:
     def __init__(self, parent=None):
         self.parent = parent
@@ -15,8 +16,8 @@ class Environment:
         if name in self.variable_map:
             self.variable_map[name] = value
             return
-        
-        if self.parent == None:
+
+        if self.parent is None:
             raise VarException()
 
         self.parent.set_var(name, value)
@@ -24,9 +25,8 @@ class Environment:
     def get_var(self, name):
         if name in self.variable_map:
             return self.variable_map[name]
-        
-        if self.parent == None:
-            raise VarException()
 
+        if self.parent is None:
+            raise VarException()
 
         return self.parent.get_var(name)

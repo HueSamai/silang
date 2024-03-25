@@ -388,7 +388,7 @@ class Parser:
         self.consume(Token.SEMI_COLON)
 
         if op != "":
-            expression = self.set_error_fields(BinaryExpression(Variable(id), expression, op), current)
+            expr = self.set_error_fields(BinaryExpression(Variable(id), expr, op), current)
 
         return self.set_error_fields(ListSet(lst, index_expr, expr), current)
 

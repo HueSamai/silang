@@ -1,5 +1,6 @@
 from error import ErrorPacket
 
+
 # class which holds token data
 class Token(ErrorPacket):
     NUMBER = "num"
@@ -15,12 +16,12 @@ class Token(ErrorPacket):
     SEMI_COLON = ";"
     EXCLAMATION = "!"
     COMMA = ","
-    
+
     INCLUDE = "include"
-        
+
     OPEN_PAREN = "("
     CLOSED_PAREN = ")"
-    
+
     OPEN_SQUARE = "["
     CLOSED_SQUARE = "]"
 
@@ -29,7 +30,7 @@ class Token(ErrorPacket):
 
     KEYWORD = "keyword"
     ASSIGNMENT_OP = "ass_op"
-    
+
     POINT = "."
 
     EOF = "eof"
