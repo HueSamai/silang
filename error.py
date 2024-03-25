@@ -11,7 +11,7 @@ class VarException(Exception):
     pass
 
 class Error:
-    stage = "Initialisation"
+    stage = "Command"
     error_occurred = False
 
     raw_lines = {}

@@ -1,0 +1,13 @@
+// let's include hashmap.sil
+#examples/hashmap.sil
+
+var map = hashmap(13);
+
+map.mset("Monday", 0);
+map.mset("Tuesday", 1);
+map.mset("Wednesday", 2);
+map.mset("Thursday", 3);
+map.mset("Friday", 4);
+map.mset("Saturday", 5);
+map.mset("Sunday", 6);
+

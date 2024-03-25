@@ -4,8 +4,13 @@ from error import *
 from _parser import *
 from tree_walker import *
 import sys
+import os
 
 input_file_path = sys.argv[1]
+if not os.path.exists(input_file_path):
+    Error.report_flat(f"File '{input_file_path}' not found")
+    exit(1)
+
 tokens = MultiFileLexer(input_file_path).tokens
 
 t = ""

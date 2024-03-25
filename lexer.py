@@ -258,6 +258,12 @@ class Lexer:
                 elif char == "r":
                     char = "\r"
                 
+                elif char == "\"":
+                    char = "\""
+                
+                elif char == "\\":
+                    char = "\\"
+
                 elif ishex(char):
                     value = char
 

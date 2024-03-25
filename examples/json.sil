@@ -1,0 +1,217 @@
+#examples/hashmap.sil
+
+fun token(type, lexeme) [type, lexeme];
+fun toktype(token) (token[0]);
+fun lexeme(token) (token[1]);
+
+var OPEN_CURLY = 0;
+var CLOSED_CURLY = 1;
+var NUMBER = 2;
+var STRING = 3;
+var COLON = 4;
+var OPEN_SQR = 5;
+var CLOSED_SQR = 6;
+var KEYWORD = 7;
+var COMMA = 8;
+
+fun isdigit(c) char(c) >= 48 and char(c) <= 57;
+fun isalpha(c) char(c) >= 97 and char(c) <= 122;
+
+fun lexjson(string)
+{
+    var tokens = [];
+    for var i = 0; i < string.length(); i += 1;
+    {
+        skip string[i] == "\n" or string[i] == "\r" or string[i] == " ";
+        if string[i] == "{" 
+            tokens.push(token(OPEN_CURLY, ""));
+        else if string[i] == "}"
+            tokens.push(token(CLOSED_CURLY, ""));
+        else if string[i] == ":"
+            tokens.push(token(COLON, ""));
+        else if string[i] == "["
+            tokens.push(token(OPEN_SQR, ""));
+        else if string[i] == "]"
+            tokens.push(token(CLOSED_SQR, ""));
+        else if string[i] == ","
+            tokens.push(token(COMMA, ""));
+        else if string[i] == "\""
+        {
+            var lexeme = "";
+            i += 1;
+            while string[i] != "\""
+            {
+                var c = string[i];
+                if c == "\\"
+                {
+                    i += 1;
+                    c = string[i];
+                    if c == "n"
+                        c = "\n";
+                    else if c == "t"
+                        c = "\t";
+                    else if c == "r"
+                        c = "\r";
+                    else if c != "\\"
+                        return novalue;
+                }
+                lexeme += c;
+                i += 1;
+            }
+
+            tokens.push(token(STRING, lexeme));
+        }
+        else if (string[i]).isdigit()
+        {
+            var number = "";
+            while i < string.length() and (string[i]).isdigit()
+            {
+                number += string[i];
+                i += 1;
+            }
+            if i < string.length() and string[i] == "."
+            {
+                i += 1;
+                while i < string.length() and (string[i]).isdigit()
+                {
+                    number += string[i];
+                    i += 1;
+                }
+            }
+            
+            i -= 1;
+            tokens.push(token(NUMBER, number));
+        }
+        else 
+        {
+            var keyword = "";
+            while (string[i]).isalpha()
+            {
+                keyword += string[i];
+                i += 1;
+            }
+            
+            i -= 1;
+
+            if keyword == "true" or keyword == "false" or keyword == "null"
+                tokens.push(token(KEYWORD, keyword));
+            else
+                return novalue;
+        }
+    }
+
+    return tokens;
+}
+
+fun parsejson(tokens, i)
+{
+    var t = toktype(tokens[i]);
+    var l = lexeme(tokens[i]);
+    
+    if t == STRING
+        return [l, i + 1];
+
+    if t == NUMBER
+        return [num(l), i + 1];
+
+    if t == KEYWORD
+        if l == "true" return [true, i + 1];
+        else if l == "false" return [false, i + 1];
+        else if l == "null" return [novalue, i + 1];
+
+    if t == OPEN_SQR
+    {
+        var list = [];
+        i += 1;
+        if toktype(tokens[i]) == CLOSED_SQR
+        {
+            return [[], i + 1];
+        }
+
+        var obj = parsejson(tokens, i);
+        list.push(obj[0]);
+        i = obj[1];
+
+        if i == -1
+            return novalue;
+        
+        while toktype(tokens[i]) == COMMA
+        {
+            i += 1;
+            var obj = parsejson(tokens, i);
+            list.push(obj[0]);
+            i = obj[1];
+
+            if i == -1
+                return [novalue, -1];
+        }
+
+        if toktype(tokens[i]) == CLOSED_SQR
+            return [list, i + 1];
+
+        return [novalue, -1]; // error
+    }
+
+    if t == OPEN_CURLY
+    {
+        var map = hashmap(103);
+        i += 1;
+
+        if toktype(tokens[i]) == CLOSED_CURLY
+            return [map, i + 1];
+
+        while true
+        {
+            if toktype(tokens[i]) != STRING
+                return [novalue, -1];
+
+            var obj = parsejson(tokens, i);
+            i = obj[1];
+            
+            if i == -1
+                return [novalue, -1];
+
+            var key = obj[0];
+
+            if toktype(tokens[i]) != COLON
+                return [novalue, -1];
+
+            i += 1;
+            obj = parsejson(tokens, i);
+            i = obj[1];
+
+            if i == -1
+                return [novalue, -1];
+
+            var val = obj[0];
+                
+            // TODO: check if key already exists
+            map.mset(key, val);
+            
+            if i >= tokens.length()
+                return [novalue, -1];
+
+            stop toktype(tokens[i]) != COMMA;
+            i += 1;
+        }
+
+        if toktype(tokens[i]) == CLOSED_CURLY
+            return [map, i + 1];
+
+        return [novalue, -1];
+    }
+    
+    // error
+    return [novalue, -1];
+}
+
+fun json(string)
+{
+    var tokens = lexjson(string);
+    
+    if !tokens return novalue;
+
+    var obj = parsejson(tokens, 0);
+    return obj[0];
+}
+

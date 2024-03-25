@@ -1,6 +1,7 @@
 from tree_components import *
 import os
 import random
+import sys
 
 class Num(Callable):
     def __init__(self):
@@ -143,6 +144,72 @@ class Round(Callable):
         except TypeError:
             return None
 
+class Exit(Callable):
+    def __init__(self):
+        self.param_count = 1
+
+    def call(self, tree_walker, args, call):
+        if type(args[0]) != float:
+            Error.report_packet(f"First argument of 'exit' must be type {tree_walker.type_to_str(float)}", call.args[0])
+            exit(1)
+
+        exit(int(args[0]))
+
+class Arg(Callable):
+    def __init__(self):
+        self.param_count = 1
+
+    def call(self, tree_walker, args, call):
+        if type(args[0]) != float:
+            Error.report_packet(f"First argument of 'arg' must be type {tree_walker.type_to_str(float)}", call.args[0])
+            exit(1)
+        
+        try:
+            return sys.argv[int(args[0]) + 1]
+        except IndexError:
+            return None
+
+
+class Type(Callable):
+    def __init__(self):
+        self.param_count = 1
+
+    def call(self, tree_walker, args, call):
+        if type(args[0]) == float:
+            return SILString("number")
+        
+        if type(args[0]) == SILString:
+            return SILString("string")
+
+        if type(args[0]) == list:
+            return SILString("list")
+
+        if type(args[0]) == bool:
+            return SILString("bool")
+
+        if args[0] == None:
+            return None
+            
+
+class Char(Callable):
+    def __init__(self):
+        self.param_count = 1
+
+    def call(self, tree_walker, args, call):
+        if type(args[0]) == SILString:
+            if len(args[0]) != 1:
+                Error.report_packet(f"Non-character string was passed to 'char': '{args[0]}'", call.args[0])
+                exit(1)
+            return float(ord(args[0].get_string()))
+        
+        elif type(args[0]) == float:
+            return SILString(chr(int(args[0])))
+
+        else:
+            Error.report_packet(f"First argument of 'char' must either be of type '{tree_walker.type_to_str(float)}' or '{tree_walker.type_to_str(SILString)}'", call.args[0])
+            exit(1)
+
+# our exported functions
 class Base:
     funs = {
         "num": Num,
@@ -154,5 +221,9 @@ class Base:
         "exists": Exists,
         "rng": Random,
         "seed": Seed,
-        "round": Round
+        "round": Round,
+        "exit": Exit,
+        "arg": Arg,
+        "char": Char,
+        "type": Type
     }

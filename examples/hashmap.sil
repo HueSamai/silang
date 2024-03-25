@@ -1,0 +1,95 @@
+// hashmap.sil by HueSamai/dotpy
+
+fun hashmap(size)
+{
+    var map = [size, [], []];
+    for var _ = 0; _ < size; _ += 1;
+    {
+        (map[1]).push([]);
+        (map[2]).push([]);
+    }
+
+    return map;
+}
+
+fun mapkeyerror() "errH";
+
+fun iskeyerr (error) error == mapkeyerror();
+
+fun mod(m, n)
+{
+    while m - n >= 0
+        m -= n;
+
+    return m;
+}
+
+fun hash(str)
+{
+    var n = 0;
+    seed(str);
+    for var i = 0; i < str.length(); i += 1;
+    {
+        n += (str[i]).char() + round(rng() * 10);
+    }
+    return n;
+}
+
+fun mset(map, key, val)
+{
+    var i = (hash(key)).mod(map[0]); 
+    for var x = 0; x < (map[1][i]).length(); x += 1;
+    {
+        if map[1][i][x] == key
+        {
+            map[2][i][x] = val;
+            return;
+        }
+    }
+
+    (map[1][i]).push(key + ""); // create a copy of the key
+    (map[2][i]).push(val);
+}
+
+fun mget(map, key)
+{
+    var i = (hash(key)).mod(map[0]); 
+    for var x = 0; x < (map[1][i]).length(); x += 1;
+        if map[1][i][x] == key
+            return map[2][i][x];
+    
+    return mapkeyerror();
+}
+
+fun ismap(map) type(map) == "list" and map.length() == 3 and length(map[1]) == map[0];
+
+fun printTab(tab, indent) for var _ = 0; _ < tab * indent; _ += 1; print " "; 
+
+fun printHash(map, tab, indent)
+{
+    if !map or !ismap(map) {
+        print novalue;
+        return;
+    }
+
+    
+    printTab(tab, indent);
+    print "{\n";
+    for var i = 0; i < length(map[1]); i += 1;
+        for var x = 0; x < (map[1][i]).length(); x += 1;
+        {
+            printTab(tab, indent + 1);
+            print map[1][i][x] + ": "; 
+
+            var val = map[2][i][x];
+
+            if ismap(val)
+                printHash(val, tab, indent + 1);
+            else
+                print val;
+
+            print ",\n";
+        }
+    printTab(tab, indent);
+    print "}";
+}
