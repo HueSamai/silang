@@ -2,19 +2,21 @@ from error import ErrorPacket
 from environment import *
 from typing import Any
 
+
 class SILStringNotChar(Exception):
     pass
+
 
 class SILString:
     def __init__(self, string):
         self.string = list(string)
-        
+
     def is_not_char(self, item):
         return type(item) is not SILString or len(item) != 1
 
     def get_string(self):
         return ''.join(self.string)
-    
+
     def __getitem__(self, index):
         return SILString(self.string[index])
 
@@ -23,13 +25,13 @@ class SILString:
             raise SILStringNotChar()
 
         self.string[index] = item.get_string()
-    
+
     def __len__(self):
         return len(self.string)
 
     def __add__(self, b):
         return SILString(self.get_string() + b.get_string())
-    
+
     def __eq__(self, b):
         return self.get_string() == b.get_string()
 
@@ -41,6 +43,7 @@ class SILString:
 
     def pop(self, index):
         return SILString(self.string.pop(index))
+
 
 class Expression(ErrorPacket):
     LITERAL = "lit"
@@ -57,9 +60,11 @@ class Expression(ErrorPacket):
         self.rvalue = rvalue
         self.op = op
 
-class Literal(Expression): 
+
+class Literal(Expression):
     def __init__(self, value):
         Expression.__init__(self, Expression.LITERAL, value, None, None)
+
 
 class Call(Expression):
     def __init__(self, callee, args):
@@ -67,25 +72,31 @@ class Call(Expression):
         self.callee = callee
         self.args = args
 
+
 class Variable(Expression):
     def __init__(self, name):
         Expression.__init__(self, Expression.VARIABLE, name, None, None)
+
 
 class ListAccess(Expression):
     def __init__(self, lst, index_expr):
         Expression.__init__(self, Expression.LIST_ACCESS, lst, index_expr, None)
 
-class Unary(Expression): 
-    def __init__(self, unary_op, value): 
+
+class Unary(Expression):
+    def __init__(self, unary_op, value):
         Expression.__init__(self, Expression.UNARY, value, None, unary_op)
 
+
 class BinaryExpression(Expression):
-    def __init__(self, lvalue, rvalue, op): 
+    def __init__(self, lvalue, rvalue, op):
         Expression.__init__(self, Expression.BINARY_EXPRESSION, lvalue, rvalue, op)
+
 
 class Input(Expression):
     def __init__(self, print):
         Expression.__init__(self, Expression.INPUT, print, None, None)
+
 
 class Statement(ErrorPacket):
     PRINT = "print"
@@ -101,7 +112,6 @@ class Statement(ErrorPacket):
     SKIP = "skip"
     LIST_SET = "list_set"
 
-
     def __init__(self, t, expr):
         self.type = t
         self.expr = expr
@@ -113,31 +123,38 @@ class If(Statement):
         self.stmt = stmt
         self.elseStmt = elseStmt
 
+
 class ExceptionStatment(Statement, Exception):
     pass
+
 
 class Return(ExceptionStatment):
     def __init__(self, expr: Expression):
         Statement.__init__(self, Statement.RETURN, expr)
 
+
 class Stop(ExceptionStatment):
     def __init__(self):
         Statement.__init__(self, Statement.STOP, None)
+
 
 class Skip(ExceptionStatment):
     def __init__(self):
         Statement.__init__(self, Statement.SKIP, None)
 
+
 class While(Statement):
-    def __init__(self, expr: Expression, stmt: Statement, final_stmt: Statement | None=None):
+    def __init__(self, expr: Expression, stmt: Statement, final_stmt: Statement | None = None):
         Statement.__init__(self, Statement.WHILE, expr)
         self.stmt = stmt
         self.final_stmt = final_stmt
+
 
 class Block(Statement):
     def __init__(self, stmts):
         self.type = Statement.BLOCK
         self.stmts = stmts
+
 
 class Function(Statement):
     def __init__(self, name: str, params: list[str], body: Block):
@@ -153,6 +170,7 @@ class VarDecl(Statement):
         Statement.__init__(self, Statement.VAR_DECL, expr)
         self.name = name
 
+
 class VarSet(Statement):
     def __init__(self, name, expr):
         Statement.__init__(self, Statement.VAR_SET, expr)
@@ -165,6 +183,7 @@ class ListSet(Statement):
         self.lst = lst
         self.index_expr = index_expr
 
+
 class Callable:
     def call(self, tree_walker, args: list[Any], call: Call) -> Any:
         return None
@@ -175,7 +194,7 @@ class FunctionCallable(Callable):
         self.func = func
         self.param_count = func.param_count
         self.name = func.name
-    
+
     def call(self, tree_walker, args: list[Expression], call: Call):
         env = Environment(tree_walker.env)
         for i, param in enumerate(self.func.params):
@@ -187,6 +206,5 @@ class FunctionCallable(Callable):
             return_value = tree_walker.eval_expr(ret.expr)
             tree_walker.env = env.parent
             return return_value
-        
+
         return None
-        
