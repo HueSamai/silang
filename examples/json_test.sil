@@ -1,13 +1,7 @@
 #examples/json.sil
 
-var employees = (("examples/employees.json".read()).json()).mget("employees");
+var employees = "examples/employees.json".read().json();
 
-print ismap(employees); print "\n"; print employees; print "\n";
 printHash(employees, 3, 0);
 
 print "\n";
-
-for var i = 0; i < employees.length(); i += 1; {
-    print (employees[i]).mget("name") + ": " + (employees[i]).mget("email") + "\n";
-    //printHash(employees[i], 3, 0); print "\n";
-}
