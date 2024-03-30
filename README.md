@@ -5,7 +5,7 @@ silang (slow interpreted language) is an interpreted, proecural-orientated langu
 # Run silang code
 The file extension for silang is '.sil', and you can run silang code by cloning this repo, and using: 
 ```
-> python main.py <file.sil>
+> python silang.py <file.sil>
 ```
 
 # Syntax highlighting
